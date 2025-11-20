@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lurodesign - Datei hochladen</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .upload-container {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .upload-card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .upload-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .upload-header h1 {
+      color: #333;
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .calendly-info {
+      color: #667eea;
+      font-size: 14px;
+      font-weight: 500;
+      margin-top: 8px;
+    }
+
+    .upload-form {
+      margin-bottom: 20px;
+    }
+
+    .drop-zone {
+      border: 3px dashed #ddd;
+      border-radius: 12px;
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: #fafafa;
+      margin-bottom: 20px;
+    }
+
+    .drop-zone:hover {
+      border-color: #667eea;
+      background: #f0f0ff;
+    }
+
+    .drop-zone.has-file {
+      border-color: #667eea;
+      background: #f0f0ff;
+    }
+
+    .drop-zone.error {
+      border-color: #e74c3c;
+      background: #ffeaea;
+    }
+
+    .drop-zone.dragover {
+      border-color: #667eea;
+      background: #e8e8ff;
+      transform: scale(1.02);
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .drop-zone-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .upload-icon,
+    .file-icon {
+      width: 64px;
+      height: 64px;
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+
+    .drop-zone-text {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin: 10px 0;
+    }
+
+    .drop-zone-hint {
+      font-size: 14px;
+      color: #999;
+    }
+
+    .file-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      word-break: break-all;
+    }
+
+    .file-size {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .message {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      text-align: center;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .submit-button {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .submit-button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+
+    .submit-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .info-box {
+      background: #f8f9fa;
+      border-left: 4px solid #667eea;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    .info-box p {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .info-box strong {
+      color: #333;
+    }
+
+    @media (max-width: 640px) {
+      .upload-card {
+        padding: 30px 20px;
+      }
+
+      .upload-header h1 {
+        font-size: 24px;
+      }
+
+      .subtitle {
+        font-size: 14px;
+      }
+
+      .drop-zone {
+        padding: 30px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="upload-container">
+    <div class="upload-card">
+      <div class="upload-header">
+        <h1>Datei hochladen</h1>
+        <p class="subtitle">
+          Vielen Dank für Ihre Terminbuchung! Bitte laden Sie hier Ihre Dateien hoch.
+        </p>
+        <p class="calendly-info" id="calendly-info" style="display: none;">
+          Termin für: <span id="calendly-email"></span>
+        </p>
+      </div>
+
+      <form class="upload-form" id="upload-form">
+        <div
+          class="drop-zone"
+          id="drop-zone"
+        >
+          <input
+            type="file"
+            class="file-input"
+            id="file-input"
+            accept="*/*"
+          />
+          <div class="drop-zone-content" id="drop-zone-content">
+            <svg
+              class="upload-icon"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+              />
+            </svg>
+            <p class="drop-zone-text">
+              Klicken Sie hier oder ziehen Sie eine Datei hierher
+            </p>
+            <p class="drop-zone-hint">
+              Unterstützte Formate: Alle Dateitypen
+            </p>
+          </div>
+        </div>
+
+        <div class="message" id="message" style="display: none;"></div>
+
+        <button
+          type="submit"
+          class="submit-button"
+          id="submit-button"
+          disabled
+        >
+          Datei hochladen
+        </button>
+      </form>
+
+      <div class="info-box">
+        <p>
+          <strong>Hinweis:</strong> Sie können diese Seite auch später aufrufen, 
+          um weitere Dateien hochzuladen.
+        </p>
+        <p style="margin-top: 10px; font-size: 12px; color: #999;">
+          <em>Vorschau-Modus: Dateien werden nicht wirklich hochgeladen</em>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const fileInput = document.getElementById('file-input');
+    const dropZone = document.getElementById('drop-zone');
+    const dropZoneContent = document.getElementById('drop-zone-content');
+    const uploadForm = document.getElementById('upload-form');
+    const submitButton = document.getElementById('submit-button');
+    const messageDiv = document.getElementById('message');
+    const calendlyInfo = document.getElementById('calendly-info');
+    const calendlyEmail = document.getElementById('calendly-email');
+
+    let selectedFile = null;
+
+    // Lese Calendly-Parameter aus URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const eventId = urlParams.get('event_id');
+    const email = urlParams.get('invitee_email');
+
+    if (email) {
+      calendlyEmail.textContent = email;
+      calendlyInfo.style.display = 'block';
+    }
+
+    // Format Dateigröße
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+    }
+
+    // Zeige Datei-Info
+    function showFileInfo(file) {
+      dropZone.classList.add('has-file');
+      dropZoneContent.innerHTML = `
+        <svg
+          class="file-icon"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+          />
+        </svg>
+        <p class="file-name">${file.name}</p>
+        <p class="file-size">${formatFileSize(file.size)}</p>
+      `;
+      submitButton.disabled = false;
+      hideMessage();
+    }
+
+    // Zeige Nachricht
+    function showMessage(text, type) {
+      messageDiv.textContent = text;
+      messageDiv.className = `message ${type}`;
+      messageDiv.style.display = 'block';
+    }
+
+    // Verstecke Nachricht
+    function hideMessage() {
+      messageDiv.style.display = 'none';
+    }
+
+    // Reset Drop-Zone
+    function resetDropZone() {
+      dropZone.classList.remove('has-file', 'error');
+      dropZoneContent.innerHTML = `
+        <svg
+          class="upload-icon"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+          />
+        </svg>
+        <p class="drop-zone-text">
+          Klicken Sie hier oder ziehen Sie eine Datei hierher
+        </p>
+        <p class="drop-zone-hint">
+          Unterstützte Formate: Alle Dateitypen
+        </p>
+      `;
+      submitButton.disabled = true;
+      selectedFile = null;
+    }
+
+    // Klick auf Drop-Zone
+    dropZone.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    // Datei ausgewählt
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        selectedFile = e.target.files[0];
+        showFileInfo(selectedFile);
+      }
+    });
+
+    // Drag & Drop
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropZone.classList.remove('dragover');
+
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        selectedFile = e.dataTransfer.files[0];
+        showFileInfo(selectedFile);
+      }
+    });
+
+    // Form Submit
+    uploadForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if (!selectedFile) {
+        showMessage('Bitte wählen Sie eine Datei aus', 'error');
+        dropZone.classList.add('error');
+        return;
+      }
+
+      submitButton.disabled = true;
+      submitButton.textContent = 'Wird hochgeladen...';
+      hideMessage();
+      dropZone.classList.remove('error');
+
+      // Simuliere Upload (in echter App würde hier der API-Call sein)
+      setTimeout(() => {
+        showMessage('Datei erfolgreich hochgeladen! Vielen Dank.', 'success');
+        resetDropZone();
+        fileInput.value = '';
+        submitButton.textContent = 'Datei hochladen';
+      }, 1500);
+    });
+  </script>
+</body>
+</html>
+

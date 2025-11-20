@@ -1,0 +1,569 @@
+/* ============================================
+   Lurodesign Upload - Modern UI Design
+   ============================================ */
+
+@import '../design-config.css';
+
+.upload-container {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.upload-card {
+  background: white;
+  border-radius: 24px;
+  padding: 48px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+
+.upload-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-primary);
+}
+
+.upload-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.upload-header h1 {
+  font-family: 'Montserrat', sans-serif;
+  color: #1a1a1a;
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  color: #6b7280;
+  font-size: 17px;
+  line-height: 1.7;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.calendly-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--primary-color);
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 16px;
+  padding: 8px 16px;
+  background: var(--primary-color-light);
+  border-radius: 20px;
+}
+
+.calendly-success-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  border: 2px solid #10b981;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  color: #065f46;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.calendly-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: #10b981;
+  color: white;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.from-calendly-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  background: var(--primary-color-light);
+  color: var(--primary-color);
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-group input.from-calendly {
+  background: var(--primary-color-light);
+  border-color: var(--primary-color);
+  border-width: 2px;
+}
+
+.loading-customer-data {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.loading-customer-data p {
+  font-size: 16px;
+}
+
+.calendly-info::before {
+  content: '✓';
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background: var(--primary-color);
+  color: white;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 18px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.upload-form {
+  margin-bottom: 24px;
+}
+
+/* Customer Form Styles */
+.customer-form {
+  margin-bottom: 32px;
+  padding: 32px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.customer-form h3 {
+  font-family: 'Montserrat', sans-serif;
+  color: #1a1a1a;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.customer-form h3::before {
+  content: '👤';
+  font-size: 24px;
+}
+
+.form-hint {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-group label {
+  display: block;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.form-group label::after {
+  content: ' *';
+  color: #ef4444;
+  opacity: 0.7;
+}
+
+.form-group:has(input[type="tel"]) label::after {
+  content: ' (optional)';
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  background: white;
+  font-family: inherit;
+  color: #1a1a1a;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+  transform: translateY(-1px);
+}
+
+.form-group input:hover:not(:disabled) {
+  border-color: #cbd5e1;
+}
+
+.form-group input:disabled {
+  background: #f9fafb;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.form-group input::placeholder {
+  color: #9ca3af;
+}
+
+/* File Upload Section */
+.file-upload-section {
+  margin-bottom: 24px;
+}
+
+.file-upload-section h3 {
+  font-family: 'Montserrat', sans-serif;
+  color: #1a1a1a;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.file-upload-section h3::before {
+  content: '📎';
+  font-size: 24px;
+}
+
+.drop-zone {
+  border: 3px dashed #d1d5db;
+  border-radius: 16px;
+  padding: 48px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #fafafa;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.drop-zone::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.drop-zone:hover::before {
+  left: 100%;
+}
+
+.drop-zone:hover {
+  border-color: var(--primary-color);
+  background: var(--bg-dropzone-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.15);
+}
+
+.drop-zone.has-file {
+  border-color: var(--primary-color);
+  background: var(--bg-dropzone-hover);
+  border-style: solid;
+}
+
+.drop-zone.error {
+  border-color: #ef4444;
+  background: #fef2f2;
+  animation: shake 0.5s;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+.drop-zone.dragover {
+  border-color: var(--primary-color);
+  background: var(--primary-color-light);
+  transform: scale(1.02);
+}
+
+.file-input {
+  display: none;
+}
+
+.drop-zone-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.upload-icon,
+.file-icon {
+  width: 72px;
+  height: 72px;
+  color: var(--primary-color);
+  margin-bottom: 12px;
+  filter: drop-shadow(0 4px 8px rgba(212, 175, 55, 0.2));
+}
+
+.drop-zone-text {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 12px 0 8px;
+}
+
+.drop-zone-hint {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.file-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+  word-break: break-all;
+  margin-top: 8px;
+}
+
+.file-size {
+  font-size: 14px;
+  color: #6b7280;
+  background: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+/* Messages */
+.message {
+  padding: 16px 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  font-size: 14px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message.success {
+  background: #d1fae5;
+  color: #065f46;
+  border: 2px solid #6ee7b7;
+}
+
+.message.success::before {
+  content: '✓';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background: #10b981;
+  color: white;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 20px;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.message.error {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 2px solid #fca5a5;
+}
+
+.message.error::before {
+  content: '✕';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background: #ef4444;
+  color: white;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 20px;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+/* Submit Button */
+.submit-button {
+  width: 100%;
+  padding: 18px 24px;
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.submit-button:hover:not(:disabled)::before {
+  width: 300px;
+  height: 300px;
+}
+
+.submit-button:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.submit-button:active:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Info Box */
+.info-box {
+  background: var(--bg-form);
+  border-left: 4px solid var(--primary-color);
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 24px;
+}
+
+.info-box p {
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.info-box strong {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .upload-card {
+    padding: 32px 24px;
+    border-radius: 20px;
+  }
+
+  .upload-header h1 {
+    font-size: 28px;
+  }
+
+  .subtitle {
+    font-size: 15px;
+  }
+
+  .customer-form {
+    padding: 24px;
+  }
+
+  .customer-form h3,
+  .file-upload-section h3 {
+    font-size: 20px;
+  }
+
+  .drop-zone {
+    padding: 36px 20px;
+  }
+
+  .drop-zone-text {
+    font-size: 18px;
+  }
+
+  .submit-button {
+    padding: 16px 20px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .upload-card {
+    padding: 24px 20px;
+  }
+
+  .upload-header h1 {
+    font-size: 24px;
+  }
+
+  .customer-form {
+    padding: 20px;
+  }
+
+  .drop-zone {
+    padding: 32px 16px;
+  }
+}
+
+/* Loading Animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.submit-button:disabled {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
