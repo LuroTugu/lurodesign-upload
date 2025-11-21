@@ -22,10 +22,15 @@ function UploadForm() {
 
   useEffect(() => {
     // Lese Calendly-Parameter aus der URL
-    const eventId = searchParams.get('event_id')
+    // Calendly kann verschiedene Parameter-Namen verwenden
+    const eventId = searchParams.get('event_id') || searchParams.get('event_type_uuid')
     const email = searchParams.get('invitee_email')
-    const name = searchParams.get('invitee_name')
-    const inviteeUri = searchParams.get('invitee_uri')
+    const name = searchParams.get('invitee_name') || 
+                 searchParams.get('invitee_full_name') ||
+                 (searchParams.get('invitee_first_name') && searchParams.get('invitee_last_name') 
+                   ? `${searchParams.get('invitee_first_name')} ${searchParams.get('invitee_last_name')}`.trim()
+                   : null)
+    const inviteeUri = searchParams.get('invitee_uri') || searchParams.get('invitee_uuid')
     
     if (eventId || email || name || inviteeUri) {
       setCalendlyData({
