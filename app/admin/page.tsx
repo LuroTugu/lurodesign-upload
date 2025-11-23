@@ -68,9 +68,9 @@ export default function AdminDashboard() {
     })
   }
 
-  const downloadFile = (savedAs: string, originalName: string) => {
-    // In Produktion: Link zu Datei-Download-Endpoint
-    window.open(`/api/download/${savedAs}`, '_blank')
+  const downloadFile = (upload: UploadRecord) => {
+    // Download-Link zu Datei
+    window.open(`/api/download/${upload.file.savedAs}`, '_blank')
   }
 
   if (loading) {
@@ -143,7 +143,7 @@ export default function AdminDashboard() {
                       </td>
                       <td>
                         <button
-                          onClick={() => downloadFile(upload.file.savedAs, upload.file.originalName)}
+                          onClick={() => downloadFile(upload)}
                           className="download-button"
                         >
                           Download

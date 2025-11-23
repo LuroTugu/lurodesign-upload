@@ -147,6 +147,13 @@ tbody tr:hover {
   background: #5568d3;
 }
 
+.cloudinary-badge {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 16px;
+  vertical-align: middle;
+}
+
 .empty-state {
   text-align: center;
   padding: 60px 20px;

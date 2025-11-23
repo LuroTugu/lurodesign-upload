@@ -6,8 +6,10 @@ import path from 'path'
 // GET Route zum Abrufen aller Uploads (für Admin-Dashboard)
 export async function GET(request: NextRequest) {
   try {
-    const uploadsDir = path.join(process.cwd(), 'uploads')
-    const databaseFile = path.join(uploadsDir, 'uploads-database.json')
+    // Auf Serverless-Plattformen verwenden wir /tmp
+    const isServerless = process.env.VERCEL || process.env.NETLIFY || process.env.AWS_LAMBDA_FUNCTION_NAME
+    const databaseDir = isServerless ? '/tmp' : path.join(process.cwd(), 'uploads')
+    const databaseFile = path.join(databaseDir, 'uploads-database.json')
 
     if (!existsSync(databaseFile)) {
       return NextResponse.json({ uploads: [] })

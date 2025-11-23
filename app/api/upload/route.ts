@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { writeFile, mkdir, readFile } from 'fs/promises'
-import { existsSync } from 'fs'
-import path from 'path'
+import { createClient } from '@supabase/supabase-js'
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,87 +24,115 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Erstelle uploads Verzeichnis falls es nicht existiert
-    const uploadsDir = path.join(process.cwd(), 'uploads')
-    if (!existsSync(uploadsDir)) {
-      await mkdir(uploadsDir, { recursive: true })
+    // Prüfe ob Supabase konfiguriert ist
+    const supabaseUrl = process.env.SUPABASE_URL
+    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+    const bucketName = process.env.SUPABASE_BUCKET_NAME || 'lurodesign-uploads'
+
+    if (!supabaseUrl || !supabaseServiceRoleKey) {
+      return NextResponse.json(
+        { error: 'Supabase ist nicht konfiguriert. Bitte setzen Sie SUPABASE_URL und SUPABASE_SERVICE_ROLE_KEY in den Environment Variables.' },
+        { status: 500 }
+      )
     }
 
-    // Generiere einen eindeutigen Dateinamen
+    // Initialisiere Supabase Client mit Service Role Key (für Backend-Uploads)
+    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey)
+
+    // Generiere Dateinamen MIT Kundennamen für bessere Zuordnung
     const timestamp = Date.now()
     const originalName = file.name
-    const fileExtension = path.extname(originalName)
-    const baseName = path.basename(originalName, fileExtension)
-    const sanitizedName = baseName.replace(/[^a-z0-9]/gi, '_').toLowerCase()
-    const fileName = `${sanitizedName}_${timestamp}${fileExtension}`
-    const filePath = path.join(uploadsDir, fileName)
-
-    // Konvertiere File zu Buffer und speichere
+    const fileExtension = originalName.substring(originalName.lastIndexOf('.')) || ''
+    const baseName = originalName.substring(0, originalName.lastIndexOf('.')) || originalName
+    
+    // Sanitize Kundennamen für Dateinamen (entferne Sonderzeichen)
+    const sanitizedCustomerName = customerName
+      .replace(/[^a-z0-9\s-]/gi, '') // Entferne Sonderzeichen
+      .replace(/\s+/g, '_') // Ersetze Leerzeichen mit Unterstrich
+      .toLowerCase()
+    
+    // Datum für bessere Organisation
+    const date = new Date().toISOString().split('T')[0] // YYYY-MM-DD
+    
+    // Dateiname: Kundenname/Datum_Originalname_Zeitstempel.extension
+    // Beispiel: max_mustermann/2025-01-21_design_1234567890.pdf
+    const supabaseFilePath = `${sanitizedCustomerName}/${date}_${baseName}_${timestamp}${fileExtension}`
+    
+    // Konvertiere File zu ArrayBuffer
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
 
-    await writeFile(filePath, buffer)
+    // Upload zu Supabase Storage
+    try {
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from(bucketName)
+        .upload(supabaseFilePath, buffer, {
+          contentType: file.type || 'application/octet-stream',
+          upsert: false, // Überschreibe nicht, erstelle neue Datei
+        })
 
-    // Speichere Upload-Informationen in JSON-Datei für Zuordnung
-    const databaseFile = path.join(uploadsDir, 'uploads-database.json')
-    
-    const uploadRecord = {
-      id: `upload_${timestamp}`,
-      timestamp: new Date().toISOString(),
-      customer: {
-        name: customerName,
-        email: customerEmail,
-        phone: customerPhone || null,
-      },
-      file: {
-        originalName: originalName,
-        savedAs: fileName,
-        size: file.size,
-        type: file.type,
-      },
-      calendly: {
-        eventId: eventId || null,
-      },
-    }
-
-    // Lade bestehende Uploads oder erstelle neue Liste
-    let uploads: typeof uploadRecord[] = []
-    if (existsSync(databaseFile)) {
-      try {
-        const existingData = await readFile(databaseFile, 'utf-8')
-        uploads = JSON.parse(existingData)
-      } catch (error) {
-        console.error('Error reading database file:', error)
-        uploads = []
+      if (uploadError) {
+        console.error('Supabase upload error:', {
+          error: uploadError,
+          message: uploadError.message,
+          customer: customerName,
+        })
+        
+        return NextResponse.json(
+          { 
+            error: 'Fehler beim Hochladen zu Supabase Storage',
+            details: process.env.NODE_ENV === 'development' ? uploadError.message : undefined
+          },
+          { status: 500 }
+        )
       }
+
+      // Hole öffentliche URL (falls Bucket public ist)
+      const { data: urlData } = supabase.storage
+        .from(bucketName)
+        .getPublicUrl(supabaseFilePath)
+
+      console.log('File uploaded to Supabase Storage:', {
+        customer: customerName,
+        fileName: originalName,
+        supabasePath: uploadData.path,
+        publicUrl: urlData.publicUrl,
+      })
+
+      return NextResponse.json({
+        success: true,
+        message: 'Datei erfolgreich zu Supabase Storage hochgeladen',
+        uploadId: uploadData.id || uploadData.path,
+        fileName: originalName,
+        supabasePath: uploadData.path,
+        publicUrl: urlData.publicUrl,
+      })
+    } catch (supabaseError: any) {
+      console.error('Supabase upload exception:', {
+        error: supabaseError?.message || supabaseError,
+        customer: customerName,
+      })
+      
+      return NextResponse.json(
+        { 
+          error: 'Fehler beim Hochladen zu Supabase Storage',
+          details: process.env.NODE_ENV === 'development' ? supabaseError?.message : undefined
+        },
+        { status: 500 }
+      )
     }
-
-    // Füge neuen Upload hinzu
-    uploads.push(uploadRecord)
-
-    // Speichere aktualisierte Liste
-    await writeFile(databaseFile, JSON.stringify(uploads, null, 2), 'utf-8')
-
-    console.log('File uploaded and saved:', {
-      id: uploadRecord.id,
-      customer: uploadRecord.customer.name,
-      email: uploadRecord.customer.email,
-      fileName: originalName,
+  } catch (error: any) {
+    console.error('Upload error:', {
+      message: error?.message || error,
+      stack: error?.stack,
+      name: error?.name,
     })
-
-    return NextResponse.json({
-      success: true,
-      message: 'Datei erfolgreich hochgeladen',
-      uploadId: uploadRecord.id,
-      fileName: originalName,
-      savedAs: fileName,
-    })
-  } catch (error) {
-    console.error('Upload error:', error)
     return NextResponse.json(
-      { error: 'Fehler beim Hochladen der Datei' },
+      { 
+        error: 'Fehler beim Hochladen der Datei',
+        details: process.env.NODE_ENV === 'development' ? error?.message : undefined
+      },
       { status: 500 }
     )
   }
 }
-

@@ -183,11 +183,16 @@ function UploadForm() {
         }
       } else {
         setUploadStatus('error')
-        setMessage(data.error || 'Fehler beim Hochladen der Datei')
+        const errorMessage = data.error || 'Fehler beim Hochladen der Datei'
+        const errorDetails = data.details ? ` (${data.details})` : ''
+        setMessage(errorMessage + errorDetails)
+        console.error('Upload error:', data)
       }
-    } catch (error) {
+    } catch (error: any) {
       setUploadStatus('error')
-      setMessage('Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.')
+      const errorMessage = error?.message || 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.'
+      setMessage(errorMessage)
+      console.error('Upload exception:', error)
     } finally {
       setUploading(false)
     }
